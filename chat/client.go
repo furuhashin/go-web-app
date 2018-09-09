@@ -10,6 +10,7 @@ type client struct {
 
 func (c *client) read() {
 	for {
+		//socket.send(msgBox.val())でテキストが送られ,ここで受ける？
 		if _, msg, err := c.socket.ReadMessage(); err == nil {
 			c.room.forward <- msg
 		} else {
@@ -21,6 +22,7 @@ func (c *client) read() {
 
 func (c *client) write() {
 	for msg := range c.send {
+		//ここでクライアントに向けてメッセージが送信される
 		if err := c.socket.WriteMessage(websocket.TextMessage, msg); err != nil {
 			break
 		}
