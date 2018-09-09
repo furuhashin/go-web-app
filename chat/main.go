@@ -27,6 +27,8 @@ func main() {
 	//フラグを解釈する
 	flag.Parse()
 	r := newRoom()
+	//なんでnewRoom内でtracerを作成しないの？デフォルトのtracerを設定するため
+	//r.tracer = trace.New(os.Stdout)
 	http.Handle("/", &templateHandler{filename: "chat.html"})
 	http.Handle("/room", r)
 	//チャットルームの開始

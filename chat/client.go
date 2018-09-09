@@ -10,7 +10,7 @@ type client struct {
 
 func (c *client) read() {
 	for {
-		//socket.send(msgBox.val())でテキストが送られ,ここで受ける？
+		//socket.send(msgBox.val())でテキストが送られ,ここで受ける。送受信の起点となる箇所
 		if _, msg, err := c.socket.ReadMessage(); err == nil {
 			c.room.forward <- msg
 		} else {
