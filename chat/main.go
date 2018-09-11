@@ -29,7 +29,8 @@ func main() {
 	r := newRoom()
 	//なんでnewRoom内でtracerを作成しないの？デフォルトのtracerを設定するため
 	//r.tracer = trace.New(os.Stdout)
-	http.Handle("/", &templateHandler{filename: "chat.html"})
+	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
+	http.Handle("/login", &templateHandler{filename: "login.html"})
 	http.Handle("/room", r)
 	//チャットルームの開始
 	go r.run()
