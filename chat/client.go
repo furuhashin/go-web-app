@@ -18,7 +18,11 @@ func (c *client) read() {
 		var msg *message
 		if err := c.socket.ReadJSON(&msg); err == nil {
 			msg.When = time.Now()
-			msg.Name = c.userData["name"].(string)
+			msg.Name = c.userData["name"].(string) //型アサーション
+			//mapは多値を返すことができるので、mapに対象のキーが存在するかを検証することができる。なかったらfalseが返る
+			if avatarURL, ok := c.userData["avatar_url"]; ok {
+				msg.AvatarURL = avatarURL.(string) //型アサーション
+			}
 			c.room.forward <- msg
 		} else {
 			break
