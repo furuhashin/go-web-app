@@ -62,6 +62,7 @@ func main() {
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	})
 	http.Handle("/upload", &templateHandler{filename: "upload.html"})
+	http.HandleFunc("/uploader", uploaderHandler)
 	//チャットルームの開始
 	go r.run()
 	//webサーバを起動
