@@ -44,7 +44,7 @@ func main() {
 		google.New("592533754731-q9fv2ie1l2et9dqkk9d59htoq8fhjkrm.apps.googleusercontent.com", "OUx2g-PSg5j0bxNBA4DlTZfn", "http://localhost:8080/auth/callback/google"),
 	)
 	//Room内でclientが使用される
-	r := newRoom(UseGravatar)
+	r := newRoom(UseFileSystemAvatar)
 	//なんでnewRoom内でtracerを作成しないの？デフォルトのtracerを設定するため
 	//r.tracer = trace.New(os.Stdout)
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
