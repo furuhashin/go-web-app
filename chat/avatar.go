@@ -9,7 +9,7 @@ import (
 var ErrNoAvatarURL = errors.New("chat: アバターのURLを取得することができません。")
 
 type Avatar interface {
-	GetAvatarURL(c *client) (string, error)
+	GetAvatarURL(ChatUser) (string, error)
 }
 
 type AuthAvatar struct{}
