@@ -12,6 +12,19 @@ type Avatar interface {
 	GetAvatarURL(ChatUser) (string, error)
 }
 
+//Avatarオブジェクトのスライス
+type TryAvatars []Avatar
+
+func (a TryAvatars) GetAvatarURL(u ChatUser) (string, error) {
+	for _, avatar := range a {
+		if url, err := avatar.GetAvatarURL(u); err == nil {
+			//urlの取得に成功した場合の処理
+			return url, nil
+		}
+	}
+	return "", ErrNoAvatarURL
+}
+
 type AuthAvatar struct{}
 
 var UseAuthAvatar AuthAvatar
