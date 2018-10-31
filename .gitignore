@@ -20,3 +20,4 @@ gen### Go template
 *.out
 
 chat/chat
+src/sprinkle/sprinkle
