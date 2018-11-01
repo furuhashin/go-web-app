@@ -22,3 +22,4 @@ gen### Go template
 chat/chat
 src/sprinkle/sprinkle
 src/domainify/domainify
+src/coolify/coolify
