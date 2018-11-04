@@ -25,3 +25,5 @@ src/domainify/domainify
 src/coolify/coolify
 src/synonyms/synonyms
 src/available/available
+src/domainfinder/domainfinder
+src/domainfinder/lib
