@@ -19,6 +19,7 @@ func main() {
 	cmdChain[len(cmdChain)-1].Stdout = os.Stdout
 
 	for i := 0; i < len(cmdChain)-1; i++ {
+		//スライスは参照を返すのでthisCmd,nextCmdへの変更はcmdChainにも反映される
 		thisCmd := cmdChain[i]
 		nextCmd := cmdChain[i+1]
 		stdout, err := thisCmd.StdoutPipe()
