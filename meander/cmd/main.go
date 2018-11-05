@@ -16,6 +16,10 @@ func main() {
 	http.ListenAndServe(":8080", http.DefaultServeMux)
 }
 func respond(w http.ResponseWriter, r *http.Request, data []interface{}) error {
+	publicData := make([]interface{}, len(data))
+	for i, d := range data {
+		publicData[i] = meander.Public(d)
+	}
 	//Encode()内部でenc.w.Write(b)をしているのでjsonの内容がレスポンスとして返る
-	return json.NewEncoder(w).Encode(data)
+	return json.NewEncoder(w).Encode(publicData)
 }
