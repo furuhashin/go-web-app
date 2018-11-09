@@ -4,8 +4,8 @@ var APIKey string
 
 type Place struct {
 	*googleGeometry `json:"geometry"`
-	Name            `json:"name"`
-	Icon            `json:"icon"`
+	Name            string         `json:"name"`
+	Icon            string         `json:"icon"`
 	Photos          []*googlePhoto `json:"photos"`
 	Vicinity        string         `json:"vicinity"`
 }
