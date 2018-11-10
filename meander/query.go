@@ -3,8 +3,12 @@ package meander
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"math/rand"
 	"net/http"
 	"net/url"
+	"sync"
+	"time"
 )
 
 var APIKey string
@@ -17,7 +21,7 @@ type Place struct {
 	Vicinity        string         `json:"vicinity"`
 }
 type googleResponse struct {
-	Result []*Place `json:"results"`
+	Results []*Place `json:"results"`
 }
 type googleGeometry struct {
 	*googleLocation `json:"location"`
@@ -72,4 +76,43 @@ func (q *Query) find(types string) (*googleResponse, error) {
 		return nil, err
 	}
 	return &response, nil
+}
+
+func (q *Query) Run() []interface{} {
+	rand.Seed(time.Now().UnixNano())
+	var w sync.WaitGroup
+	var l sync.Mutex
+	places := make([]interface{}, len(q.Journey))
+	for i, r := range q.Journey {
+		//goroutineが起動された分、カウントアップされる。１つのgoroutineが終了するとw.Done()によってカウントダウンされる
+		w.Add(1)
+		go func(types string, i int) {
+			defer w.Done()
+			response, err := q.find(types)
+			if err != nil {
+				log.Println("施設の検索に失敗しました:", err)
+				return
+			}
+			if len(response.Results) == 0 {
+				log.Println("施設が見つかりませんでした", types)
+				return
+			}
+			for _, result := range response.Results {
+				for _, photo := range result.Photos {
+					photo.URL = "https://maps.googleapis.com/maps/api/place/photo?" +
+						"maxwidth=1000&photoreference=" + photo.PhotoRef +
+						"&key=" + APIKey
+				}
+			}
+			//1つの行程に対して複数の施設が返る可能性があるでその中からランダムに１つ選ぶ
+			randI := rand.Intn(len(response.Results))
+			l.Lock()
+			places[i] = response.Results[randI]
+			l.Unlock()
+		}(r, i)
+	}
+	//forループのほうがgoroutineより早く終わってしまう可能性があるので、ここで待つ
+	//終了状態というのがw.Add(1)でカウントアップしたカウントが０になるということ
+	w.Wait()
+	return places
 }
