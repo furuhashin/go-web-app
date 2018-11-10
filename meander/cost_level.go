@@ -22,6 +22,7 @@ var costStrings = map[string]Cost{
 }
 
 //ポインタでないのはなぜなのか？
+//Costのフィールドにアクセスしないから
 func (l Cost) String() string {
 	for s, v := range costStrings {
 		if l == v {
