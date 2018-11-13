@@ -2,16 +2,22 @@ package backup
 
 import (
 	"flag"
+	"github.com/matryer/filedb"
 	"github.com/pkg/errors"
 	"log"
 )
 
+type path struct {
+	Path string
+	Hash string
+}
+
 func main() {
-	var fatalError error
+	var fatalErr error
 	defer func() {
 		if fatalErr != nil {
 			flag.PrintDefaults()
-			log.Fatalln(fatalError)
+			log.Fatalln(fatalErr)
 		}
 	}()
 	var (
@@ -20,6 +26,17 @@ func main() {
 	flag.Parse()
 	args := flag.Args()
 	if len(args) < 1 {
-		fatalError = errors.New("エラー；コマンドを指定してください")
+		fatalErr = errors.New("エラー；コマンドを指定してください")
+	}
+	db, err := filedb.Dial(*dppath)
+	if err != nil {
+		fatalErr = err
+		return
+	}
+	defer db.Close()
+	col, err := db.C("path")
+	if err != nil {
+		fatalErr = err
+		return
 	}
 }
