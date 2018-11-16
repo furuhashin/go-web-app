@@ -1,7 +1,9 @@
 package backup
 
 import (
+	"encoding/json"
 	"flag"
+	"fmt"
 	"github.com/matryer/filedb"
 	"github.com/pkg/errors"
 	"log"
@@ -11,6 +13,10 @@ import (
 type path struct {
 	Path string
 	Hash string
+}
+
+func (p path) String() string {
+	return fmt.Sprintf("%s [%s]", p.Path, p.Hash)
 }
 
 func main() {
@@ -42,6 +48,16 @@ func main() {
 	}
 	switch strings.ToLower(args[0]) {
 	case "list":
+		var path path
+		col.ForEach(func(i int, data []byte) bool {
+			err := json.Unmarshal(data, &path)
+			if err != nil {
+				fatalErr = err
+				return true
+			}
+			fmt.Printf("= %s\n", path)
+			return false
+		})
 	case "add":
 	case "remove":
 	}
