@@ -5,6 +5,7 @@ import (
 	"github.com/matryer/filedb"
 	"github.com/pkg/errors"
 	"log"
+	"strings"
 )
 
 type path struct {
@@ -38,5 +39,10 @@ func main() {
 	if err != nil {
 		fatalErr = err
 		return
+	}
+	switch strings.ToLower(args[0]) {
+	case "list":
+	case "add":
+	case "remove":
 	}
 }
