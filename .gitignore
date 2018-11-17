@@ -28,3 +28,4 @@ src/available/available
 src/domainfinder/domainfinder
 src/domainfinder/lib
 meander/cmd/meanderapi
+backup/cmds/backup/backup
