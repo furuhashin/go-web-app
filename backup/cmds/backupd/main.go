@@ -1,8 +1,11 @@
 package main
 
 import (
+	"../../../backup"
+	"encoding/json"
 	"flag"
 	"github.com/matryer/filedb"
+	"github.com/pkg/errors"
 	"log"
 )
 
@@ -38,6 +41,22 @@ func main() {
 	col, err := db.C("paths")
 	if err != nil {
 		fatalErr = err
+		return
+	}
+	var path path
+	col.ForEach(func(_ int, data []byte) bool {
+		if err := json.Unmarshal(data, &path); err != nil {
+			fatalErr = err
+			return true
+		}
+		m.Paths[path.Path] = path.Hash
+		return false //処理を中止します
+	})
+	if fatalErr != nil {
+		return
+	}
+	if len(m.Paths) < 1 {
+		fatalErr = errors.New("パスがありません。backupツールを作って追加してください")
 		return
 	}
 }
