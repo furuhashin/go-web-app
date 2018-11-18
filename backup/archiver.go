@@ -15,6 +15,7 @@ type Archiver interface {
 
 type zipper struct{}
 
+//ZIPには*zipperが格納される。*zipperはArchive()とDestFmt()を実装しているのでArchive型となる
 var ZIP Archiver = (*zipper)(nil)
 
 func (z *zipper) Archive(src, dest string) error {
