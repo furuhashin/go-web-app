@@ -10,6 +10,7 @@ import (
 
 func DirHash(path string) (string, error) {
 	hash := md5.New()
+	//ファイルツリー全体を再帰的に見てくれる
 	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err

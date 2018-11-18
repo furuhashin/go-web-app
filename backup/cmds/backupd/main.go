@@ -66,10 +66,13 @@ func main() {
 	}
 	check(m, col)
 	signalChan := make(chan os.Signal, 1)
+	//チャネルが終了シグナルを受け取れるようにする
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+	//以下無限ループ
 Loop:
 	for {
 		select {
+		//指定した時間(コマンドライン引数で設定)が経過するとチャネルを返す
 		case <-time.After(time.Duration(*interval) * time.Second):
 			check(m, col)
 		case <-signalChan:
@@ -87,23 +90,28 @@ func check(m *backup.Monitor, col *filedb.C) {
 	if err != nil {
 		log.Panicln("バックアップに失敗しました:", err)
 	}
+	//この時点ですべてのパスに対してのチェックが完了し、その総カウントが設定されている
 	if counter > 0 {
 		log.Printf(" %d個のディレクトリをアーカイブしました\n", counter)
 		// ハッシュ値を更新します
 		var path path
 		col.SelectEach(func(_ int, data []byte) (bool, []byte, bool) {
+			//json形式のdataをpath構造体に書き込む
 			if err := json.Unmarshal(data, &path); err != nil {
 				log.Println("JSONデータの読み込みに失敗しました。"+
 					"次の項目に進みます:", err)
 				return true, data, false
 			}
+			//変更の有無にかかわらずハッシュがセットされる
 			path.Hash, _ = m.Paths[path.Path]
+			//構造体を元にjsonが返される
 			newdata, err := json.Marshal(&path)
 			if err != nil {
 				log.Println("JSONデータの書き出しに失敗しました。"+
 					"次の項目に進みます:", err)
 				return true, data, false
 			}
+			//第一引数がtrueなら書き込みを行う。この場合のみ新しい値に書き換わる
 			return true, newdata, false
 		})
 	} else {
