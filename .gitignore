@@ -29,3 +29,6 @@ src/domainfinder/domainfinder
 src/domainfinder/lib
 meander/cmd/meanderapi
 backup/cmds/backup/backup
+backup/cmds/backup/backupdata
+backup/cmds/backupd/archive
+backup/cmds/backupd/backupd

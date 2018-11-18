@@ -15,6 +15,8 @@ type Archiver interface {
 
 type zipper struct{}
 
+var ZIP Archiver = (*zipper)(nil)
+
 func (z *zipper) Archive(src, dest string) error {
 	if err := os.MkdirAll(filepath.Dir(dest), 0777); err != nil {
 		return err
@@ -49,7 +51,7 @@ func (z *zipper) Archive(src, dest string) error {
 	})
 }
 
-func (z *zipper) DestFmt() func(int64) string {
+func (*zipper) DestFmt() func(int64) string {
 	return func(i int64) string {
 		return fmt.Sprintf("%d.zip", i)
 	}

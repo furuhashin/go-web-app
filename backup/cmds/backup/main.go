@@ -28,20 +28,22 @@ func main() {
 		}
 	}()
 	var (
-		dppath = flag.String("db", "./backupdata", "データベースのディレクトリへのパス")
+		dbpath = flag.String("db", "./backupdata", "データベースのディレクトリへのパス")
 	)
 	flag.Parse()
 	args := flag.Args()
 	if len(args) < 1 {
-		fatalErr = errors.New("エラー；コマンドを指定してください")
+		fatalErr = errors.New("エラー; コマンドを指定してください")
+		return
 	}
-	db, err := filedb.Dial(*dppath)
+
+	db, err := filedb.Dial(*dbpath)
 	if err != nil {
 		fatalErr = err
 		return
 	}
 	defer db.Close()
-	col, err := db.C("path")
+	col, err := db.C("paths")
 	if err != nil {
 		fatalErr = err
 		return
@@ -66,6 +68,7 @@ func main() {
 		for _, p := range args[1:] {
 			path := &path{Path: p, Hash: "まだアーカイブされていません"}
 			if err := col.InsertJSON(path); err != nil {
+				fatalErr = err
 				return
 			}
 			fmt.Printf("+ %s\n", path)

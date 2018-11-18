@@ -23,7 +23,7 @@ func (m *Monitor) Now() (int, error) {
 			if err != nil {
 				return counter, err
 			}
-			m.Paths[path] = newHash
+			m.Paths[path] = newHash // ハッシュ値を更新します
 			counter++
 		}
 	}
